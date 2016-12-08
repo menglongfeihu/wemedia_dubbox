@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<dubbo:application name="demo-provider" owner="programmer"
+		organization="dubbox" />
+
+	<dubbo:registry address="zookeeper://10.16.15.39:2181" />
+
+	<dubbo:protocol name="rest" server="tomcat" contextpath="broadcast"
+		port="8888" threads="500" keepalive="false" accepts="500" extension="com.sohu.wemedia.broadcast.extension.CustomExceptionMapper" />
+
+	<dubbo:protocol name="dubbo" serialization="kryo"
+		optimizer="com.sohu.wemedia.broadcast.model.SerializationOptimizerImpl" />
+
+	<dubbo:service interface="com.sohu.wemedia.broadcast.service.CommentService"
+		ref="commentService" protocol="dubbo" />
+
+	<dubbo:service interface="com.sohu.wemedia.broadcast.service.CommentRestService"
+		ref="commentRestService" protocol="rest" validation="true" />
+
+	<bean id="commentService"
+		class="com.sohu.wemedia.broadcast.service.impl.CommentServiceImpl" />
+
+	<bean id="commentRestService"
+		class="com.sohu.wemedia.broadcast.service.impl.CommentRestServiceImpl">
+		<property name="commentService" ref="commentService" />
+	</bean>
+
+
+
+</beans>
